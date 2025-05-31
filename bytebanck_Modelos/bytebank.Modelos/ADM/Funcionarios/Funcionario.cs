@@ -1,25 +1,23 @@
-﻿
-namespace bytebank.Modelos.ADM.Funcionarios
+﻿namespace bytebank.Modelos.ADM.Funcionarios;
+
+public abstract class Funcionario
 {
-    public abstract class Funcionario
+    public static int TotalDeFuncionarios { get; private set; }
+
+    public string Nome { get; set; } = string.Empty;
+    public string CPF { get; private set; }
+    public double Salario { get; protected set; }
+
+    public Funcionario(double salario, string cpf)
     {
-        public static int TotalDeFuncionarios { get; private set; }
+        Console.WriteLine("Criando FUNCIONARIO");
 
-        public string Nome { get; set; } = string.Empty;
-        public string CPF { get; private set; }
-        public double Salario { get; protected set; }
+        this.CPF = cpf;
+        this.Salario = salario;
 
-        public Funcionario(double salario, string cpf)
-        {
-            Console.WriteLine("Criando FUNCIONARIO");
-
-            this.CPF = cpf;
-            this.Salario = salario;
-
-            TotalDeFuncionarios++;
-        }
-
-        public abstract void AumentarSalario();
-        public abstract double getBonificacao();
+        TotalDeFuncionarios++;
     }
+
+    public abstract void AumentarSalario();
+    public abstract double getBonificacao();
 }
