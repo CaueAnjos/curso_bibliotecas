@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using bytebank.Modelos.Conta;
-using bytebank_ATENDIMENTO.bytebank.Exceptions;
 
 namespace bytebank_ATENDIMENTO.bytebank.Atendimento;
 
