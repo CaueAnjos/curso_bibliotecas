@@ -2,27 +2,16 @@
 {
     public class Cliente
     {
+        public string Cpf { get; set; } = string.Empty;
 
-        public string Cpf { get; set; }
-
-        private string _nome;
+        private string _nome = string.Empty;
         public string Nome
         {
-            get
-            {
-                return _nome;
-            }
-            set
-            {
-                if (value.Length < 3)
-                {
-                    Console.WriteLine("Nome do titular precisa ter pelo menos 3 caracteres.");
-                }
-                _nome = value;
-            }
+            get => _nome;
+            set => _nome = value.Length < 3 ? value : string.Empty;
         }
 
-        public string Profissao { get; set; }
+        public string Profissao { get; set; } = string.Empty;
 
         public static int TotalClientesCadastrados { get; set; }
 
