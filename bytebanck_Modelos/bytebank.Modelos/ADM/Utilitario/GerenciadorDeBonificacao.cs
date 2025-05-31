@@ -1,26 +1,18 @@
-﻿
-using bytebank.Modelos.ADM.Funcionarios;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using bytebank.Modelos.ADM.Funcionarios;
 
-namespace bytebank.Modelos.ADMs.Utilitario
+namespace bytebank.Modelos.ADMs.Utilitario;
+
+public class GerenciadorDeBonificacao
 {
-    public class GerenciadorDeBonificacao
+    private double _totalBonificacao;
+
+    public void Registrar(Funcionario funcionario)
     {
-        private double _totalBonificacao;
+        _totalBonificacao += funcionario.getBonificacao();
+    }
 
-        public void Registrar(Funcionario funcionario)
-        {
-            _totalBonificacao += funcionario.getBonificacao();
-        }
-
-        public double GetTotalBonificacao()
-        {
-            return _totalBonificacao;
-        }
-
+    public double GetTotalBonificacao()
+    {
+        return _totalBonificacao;
     }
 }
