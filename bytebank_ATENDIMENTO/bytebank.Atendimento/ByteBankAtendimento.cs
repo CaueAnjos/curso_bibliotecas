@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text.Json;
+using System.Text.RegularExpressions;
 using bytebank.Modelos.Conta;
 
 namespace bytebank_ATENDIMENTO.bytebank.Atendimento;
@@ -25,7 +26,7 @@ internal class ByteBankAtendimento
     public void AtendimentoCliente()
     {
         char opcao = '0';
-        while (opcao != '6')
+        while (opcao != '7')
         {
             Console.Clear();
             Console.WriteLine("===============================");
@@ -35,7 +36,8 @@ internal class ByteBankAtendimento
             Console.WriteLine("===3 - Remover Conta        ===");
             Console.WriteLine("===4 - Ordenar Contas       ===");
             Console.WriteLine("===5 - Pesquisar Conta      ===");
-            Console.WriteLine("===6 - Sair do Sistema      ===");
+            Console.WriteLine("===6 - Exportar para JSON   ===");
+            Console.WriteLine("===7 - Sair do Sistema      ===");
             Console.WriteLine("===============================");
             Console.WriteLine("\n\n");
             Console.Write("Digite a opção desejada: ");
@@ -60,6 +62,9 @@ internal class ByteBankAtendimento
                     PesquisarContas();
                     break;
                 case '6':
+                    ExportarParaJSON();
+                    break;
+                case '7':
                     EncerrarAplicacao();
                     break;
                 default:
@@ -67,6 +72,47 @@ internal class ByteBankAtendimento
                     break;
             }
         }
+    }
+
+
+    public void ExportarParaJSON()
+    {
+        Console.Clear();
+        Console.WriteLine("================================");
+        Console.WriteLine("===    EXPROTAR PARA JSON    ===");
+        Console.WriteLine("================================");
+        Console.WriteLine("\n");
+
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.WriteIndented = true;
+        options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+
+        string json = JsonSerializer.Serialize(_listaDeContas, options);
+
+        Console.WriteLine("Where the file should be saved?");
+        string fileName = "Contas.json";
+        string defaultPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                fileName);
+        string filePath = Path.GetFullPath(defaultPath);
+
+        string? userPath = Console.ReadLine();
+
+        if (PathValido(userPath))
+            filePath = userPath!;
+        else
+            Console.WriteLine("Caminho inválido.");
+
+        File.WriteAllText(filePath, json);
+        Console.WriteLine($"Salvando arquivo em {filePath}");
+        Console.ReadKey();
+    }
+
+    private bool PathValido(string? filePath)
+    {
+        return !string.IsNullOrWhiteSpace(filePath) &&
+            filePath.IndexOfAny(Path.GetInvalidFileNameChars()) == -1 &&
+            Path.IsPathRooted(filePath);
     }
 
     private void EncerrarAplicacao()
@@ -113,7 +159,7 @@ internal class ByteBankAtendimento
             case 3:
                 Console.Write("Informe o Nº da Agência: ");
                 int numeroAgencia = 0;
-                if (int.TryParse(Console.ReadLine(), out numeroAgencia))
+                if (!int.TryParse(Console.ReadLine(), out numeroAgencia))
                     return;
 
                 List<ContaCorrente> contasPorAgencia = ConsultaPorAgencia(numeroAgencia);
@@ -234,7 +280,7 @@ internal class ByteBankAtendimento
         Console.Write("Número da Agência: ");
 
         int numeroAgencia = 0;
-        if (int.TryParse(Console.ReadLine(), out numeroAgencia))
+        if (!int.TryParse(Console.ReadLine(), out numeroAgencia))
         {
             Console.WriteLine("Nenhum input foi recebido");
             return;
@@ -245,9 +291,10 @@ internal class ByteBankAtendimento
 
         Console.Write("Informe o saldo inicial: ");
         double saldo = 0.0;
-        if (double.TryParse(Console.ReadLine(), out saldo))
+        if (!double.TryParse(Console.ReadLine(), out saldo))
         {
             Console.WriteLine("Nenhum input foi recebido");
+            Console.ReadKey();
             return;
         }
         conta.Saldo = saldo;

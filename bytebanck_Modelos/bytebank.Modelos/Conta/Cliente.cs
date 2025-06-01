@@ -8,7 +8,7 @@
         public string Nome
         {
             get => _nome;
-            set => _nome = value.Length < 3 ? value : string.Empty;
+            set => _nome = value.Length >= 3 ? value : string.Empty;
         }
 
         public string Profissao { get; set; } = string.Empty;
