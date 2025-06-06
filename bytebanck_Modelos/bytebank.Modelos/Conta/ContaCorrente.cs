@@ -58,6 +58,11 @@
             return this.Numero_agencia.CompareTo(outro.Numero_agencia);
         }
 
+        public ContaCorrente()
+            : this(1000)
+        {
+        }
+
         public ContaCorrente(int numero_agencia, string conta)
         {
             Numero_agencia = numero_agencia;

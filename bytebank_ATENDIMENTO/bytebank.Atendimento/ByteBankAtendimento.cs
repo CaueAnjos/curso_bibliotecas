@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using bytebank.Modelos.Conta;
 
 namespace bytebank_ATENDIMENTO.bytebank.Atendimento;
@@ -83,36 +84,48 @@ internal class ByteBankAtendimento
         Console.WriteLine("================================");
         Console.WriteLine("\n");
 
-        JsonSerializerOptions options = new JsonSerializerOptions();
-        options.WriteIndented = true;
-        options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-
-        string json = JsonSerializer.Serialize(_listaDeContas, options);
+        Console.WriteLine("How do you want to export the data? (xml or json)");
+        string exportType = Console.ReadLine()?.ToLower() ?? "json";
+        if (exportType != "xml" && exportType != "json")
+            exportType = "json";
 
         Console.WriteLine("Where the file should be saved?");
-        string fileName = "Contas.json";
+        string fileName = $"Contas.{exportType}";
         string defaultPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 fileName);
         string filePath = Path.GetFullPath(defaultPath);
 
         string? userPath = Console.ReadLine();
-
-        if (PathValido(userPath))
-            filePath = userPath!;
-        else
+        try
+        {
+            filePath = Path.GetFullPath(userPath!);
+        }
+        catch
+        {
             Console.WriteLine("Caminho inválido.");
+        }
 
-        File.WriteAllText(filePath, json);
+
+        switch (exportType)
+        {
+            case "xml":
+                XmlSerializer serializer = new XmlSerializer(typeof(List<ContaCorrente>));
+                FileStream fs = new FileStream(filePath, FileMode.Create);
+                serializer.Serialize(fs, _listaDeContas);
+                fs.Close();
+                break;
+            case "json":
+                JsonSerializerOptions options = new JsonSerializerOptions();
+                options.WriteIndented = true;
+                options.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                string json = JsonSerializer.Serialize(_listaDeContas, options);
+                File.WriteAllText(filePath, json);
+                break;
+        }
+
         Console.WriteLine($"Salvando arquivo em {filePath}");
         Console.ReadKey();
-    }
-
-    private bool PathValido(string? filePath)
-    {
-        return !string.IsNullOrWhiteSpace(filePath) &&
-            filePath.IndexOfAny(Path.GetInvalidFileNameChars()) == -1 &&
-            Path.IsPathRooted(filePath);
     }
 
     private void EncerrarAplicacao()
