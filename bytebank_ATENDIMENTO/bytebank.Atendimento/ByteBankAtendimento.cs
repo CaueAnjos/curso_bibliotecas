@@ -7,17 +7,33 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento;
 
 internal class ByteBankAtendimento
 {
-
-    private List<ContaCorrente> _listaDeContas = new List<ContaCorrente>(){
-        new ContaCorrente(95, "123456-X"){Saldo=100,Titular = new Cliente{Cpf="11111",Nome ="Henrique"}},
-        new ContaCorrente(95, "951258-X"){Saldo=200,Titular = new Cliente{Cpf="22222",Nome ="Pedro"}},
-        new ContaCorrente(94, "987321-W"){Saldo=60,Titular = new Cliente{Cpf="33333",Nome ="Marisa"}}
+    private List<ContaCorrente> _listaDeContas = new List<ContaCorrente>()
+    {
+        new ContaCorrente(95, "123456-X")
+        {
+            Saldo = 100,
+            Titular = new Cliente { Cpf = "11111", Nome = "Henrique" },
+        },
+        new ContaCorrente(95, "951258-X")
+        {
+            Saldo = 200,
+            Titular = new Cliente { Cpf = "22222", Nome = "Pedro" },
+        },
+        new ContaCorrente(94, "987321-W")
+        {
+            Saldo = 60,
+            Titular = new Cliente { Cpf = "33333", Nome = "Marisa" },
+        },
     };
 
     public char PedirOpcao()
     {
         string? resposta = Console.ReadLine();
-        if (string.IsNullOrEmpty(resposta) || resposta.Length > 1 || !Regex.IsMatch(resposta, "[0-9]"))
+        if (
+            string.IsNullOrEmpty(resposta)
+            || resposta.Length > 1
+            || !Regex.IsMatch(resposta, "[0-9]")
+        )
             return '?'; // Default option
 
         char opcao = resposta[0];
@@ -75,7 +91,6 @@ internal class ByteBankAtendimento
         }
     }
 
-
     public void ExportarParaJSON()
     {
         Console.Clear();
@@ -92,8 +107,9 @@ internal class ByteBankAtendimento
         Console.WriteLine("Where the file should be saved?");
         string fileName = $"Contas.{exportType}";
         string defaultPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                fileName);
+            Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+            fileName
+        );
         string filePath = Path.GetFullPath(defaultPath);
 
         string? userPath = Console.ReadLine();
@@ -105,7 +121,6 @@ internal class ByteBankAtendimento
         {
             Console.WriteLine("Caminho inválido.");
         }
-
 
         switch (exportType)
         {
@@ -141,8 +156,9 @@ internal class ByteBankAtendimento
         Console.WriteLine("===    PESQUISAR CONTAS     ===");
         Console.WriteLine("===============================");
         Console.WriteLine("\n");
-        Console.Write("Deseja pesquisar por (1) NÚMERO DA CONTA ou (2)CPF TITULAR ou " +
-                " (3) Nº AGÊNCIA : ");
+        Console.Write(
+            "Deseja pesquisar por (1) NÚMERO DA CONTA ou (2)CPF TITULAR ou " + " (3) Nº AGÊNCIA : "
+        );
 
         int opcao = 0;
         int.TryParse(Console.ReadLine(), out opcao);
@@ -183,7 +199,6 @@ internal class ByteBankAtendimento
                 Console.WriteLine("Opção não implementada.");
                 break;
         }
-
     }
 
     private void ExibirListaDeContas(List<ContaCorrente> contasPorAgencia)
@@ -204,15 +219,15 @@ internal class ByteBankAtendimento
     private List<ContaCorrente> ConsultaPorAgencia(int numeroAgencia)
     {
         var consulta = (
-                from conta in _listaDeContas
-                where conta.Numero_agencia == numeroAgencia
-                select conta).ToList();
+            from conta in _listaDeContas
+            where conta.Numero_agencia == numeroAgencia
+            select conta
+        ).ToList();
         return consulta;
     }
 
     private ContaCorrente? ConsultaPorCPFTitular(string? cpf)
     {
-
         return _listaDeContas.Where(conta => conta.Titular.Cpf == cpf).FirstOrDefault();
     }
 
