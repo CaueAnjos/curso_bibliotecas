@@ -4,18 +4,13 @@ namespace bytebank.Modelos.ADM.Funcionarios;
 
 public abstract class FuncionarioAutenticavel : Funcionario, IAutenticavel
 {
-    public string? Senha { get; set; }
+    public Senha Senha { get; set; } = new Senha();
 
     public FuncionarioAutenticavel(double salario, string cpf)
-        : base(salario, cpf)
-    {
-    }
+        : base(salario, cpf) { }
 
-    public bool Autenticar(string senha)
+    public bool Autenticar(Senha senha)
     {
-        if (string.IsNullOrEmpty(Senha))
-            throw new NullReferenceException("Senha is null");
-
-        return Senha == senha;
+        return Senha.Equals(senha);
     }
 }

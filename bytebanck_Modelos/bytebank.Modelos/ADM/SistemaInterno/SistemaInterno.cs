@@ -2,7 +2,7 @@
 
 public class SistemaInterno
 {
-    public bool Logar(IAutenticavel funcionario, string senha)
+    public bool Logar(IAutenticavel funcionario, Senha senha)
     {
         bool usuarioAutenticado = funcionario.Autenticar(senha);
 
